@@ -1,9 +1,9 @@
 @extends("layouts.header")
   @php
-    $page_title = "الأصدقاء";
-    $menu_active = "myfrind";
+    $page_title = "تفضيلاتي";
+    $menu_active = "favorite";
     $prog_footer = env("prog_footer");
-    $btn_title="إضافة الأصدقاء جديد";
+    $btn_title="إضافة تفضيل جديد";
 @endphp
 
  @if (chk_para(session("user_info")["ui_para"], $menu_active."_show")=="no" and session("user_info")["ui_type"]!=="1")
@@ -28,14 +28,14 @@
             <div class="row g-1">
             <div class="d-grid  p-1 col-md-auto col-sm-12 order-3 btn-responsive">
               <?php if (chk_para(session("user_info")["ui_para"],$menu_active."_add")=="ok" or session("user_info")["ui_type"]=="1"){ ?>
-                <a class="btn btn-primary btn-responsive" data-bs-toggle="modal" data-remote="{{ route('myfrind.create') }}"  data-bs-target="#modal-add"><i class="fas fa-plus"></i>
+                <a class="btn btn-primary btn-responsive" data-bs-toggle="modal" data-remote="{{ route('favorite.create') }}"  data-bs-target="#modal-add"><i class="fas fa-plus"></i>
                  <b><?php echo $btn_title; ?></b>
                 </a>
             <?php } ?>
             
              </div>
               <div class="d-grid  p-1 col-md-auto col-sm-12 order-2 btn-responsive">
-                <form action="{{ route('myfrind.list') }}" method="GET">
+                <form action="{{ route('favorite.list') }}" method="GET">
                  <div class="input-group">
                    <span class="input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
                      <input name="q" type="text" class="form-control" placeholder="جزء من الرقم أو تاريخ الاضافة أو الاسم">
@@ -45,7 +45,7 @@
               </div>
               <div class="d-grid  p-1 col-md-auto col-sm-12 order-1 btn-responsive">
               <?php if (chk_para(session("user_info")["ui_para"],$menu_active."_rep")=="ok" or session("user_info")["ui_type"]=="1"){ ?>
-                <a class="btn btn-success btn-responsive" data-bs-toggle="modal" data-remote="{{ route('myfrind.rep') }}"  data-bs-target="#modal-rep"><i class="far fa-file-alt"></i> <b>التقارير</b></a>
+                <a class="btn btn-success btn-responsive" data-bs-toggle="modal" data-remote="{{ route('favorite.rep') }}"  data-bs-target="#modal-rep"><i class="far fa-file-alt"></i> <b>التقارير</b></a>
               <?php } ?>
               </div>
               
@@ -77,12 +77,12 @@
                   <tr class="bg-infox">
                       <th data-visible="ture" data-orderable="false">الاداوات</th>
                       
-      				<th class="text-center" data-visible="false">الحالة الاجتماعية</th>
-      				<th class="text-center" data-visible="true">البريد الالكتروني</th>
-      				<th class="text-center" data-visible="true">العنوان</th>
-      				<th class="text-center" data-visible="true">الجوال</th>
-      				<th class="text-center" data-visible="true">الاسم</th>
-      				<th class="text-center" data-visible="true">تاريخ الاضافة</th>
+   
+      				
+      				<th class="text-center" data-visible="true">العمر</th>
+              <th class="text-center" data-visible="true">التفضيلات</th>
+      				<th class="text-center" data-visible="false">الاسم</th>
+      				<th class="text-center" data-visible="false">تاريخ الاضافة</th>
 	  				<th class="text-center" data-visible="ture"><b>الرقم</b></th>
 	  			</tr>
 			</thead>
@@ -93,29 +93,21 @@
     
       <td class="cell">
           <a class="btn btn-success" data-bs-toggle="modal"
-              data-remote="{{ route('myfrind.show', enc($list->id) ) }}"
+              data-remote="{{ route('favorite.show', enc($list->id) ) }}"
               data-bs-target="#modal-show"><i class="fas fa-file-alt"></i></a>
       </td>
-      
-      
-      
-		 <td class="cell">
-        <?php echo get_my_f_social($list->my_f_social); ?>
-     </td>
+    
 		<td class="cell">
-      <?php echo $list->my_f_email; ?>
+      <?php echo $list->age; ?>
     </td>
 		<td class="cell">
-      <?php echo $list->my_f_address; ?>
+      <?php echo $list->fav_pizza; ?>
     </td>
 		<td class="cell">
-      <?php echo $list->my_f_mobile; ?>
+      <?php echo $list->name; ?>
     </td>
 		<td class="cell">
-      <?php echo $list->my_f_name; ?>
-    </td>
-		<td class="cell">
-      <?php echo $list->my_f_add_date; ?>
+      <?php echo $list->fav_add_date; ?>
     </td>
 		<td class="cell">
       <?php echo $list->id; ?>
@@ -127,7 +119,6 @@
         </tbody>
       </table>
     </div>
-
     <!--//table-responsive-->
   </div>
   <!--//app-card-body-->
@@ -312,7 +303,7 @@ function del(vall) {
     .then((willDelete) => {
         if (willDelete) {
           window.swal({title: "جاري الحذف",text: "الرجاء الإنتظار",icon: "{{ asset('images/loding2.gif') }}",buttons: false,allowOutsideClick: false});
-          axios.delete(`/myfrind/${vall}`)
+          axios.delete(`/favorite/${vall}`)
         .then(response => {
           swal({text: "تم الحذف",icon: "success",timer: 1500,button: false,});
             setTimeout(function(){location.reload();}, 1500);
@@ -323,9 +314,9 @@ function del(vall) {
         }
       });
   };
+
 </script>
 
 @include('layouts.footer')
 
 @endsection
-

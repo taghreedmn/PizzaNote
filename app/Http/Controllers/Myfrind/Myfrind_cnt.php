@@ -6,11 +6,12 @@
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Hash;
   use Illuminate\Validation\Rules;
-  
+
   use Elibyy\TCPDF\Facades\TCPDF;
   use Alkoumi\LaravelHijriDate\Hijri;
-  
+
   use App\Models\Myfrind;
+  use App\Models\Pizza;
   
   
   class Myfrind_cnt extends Controller
@@ -135,12 +136,9 @@
           } else {
               $listings = Myfrind::orderBy("id", "desc")->paginate(20);
           }
-      
+        
           return view('myfrind.list', compact('listings'));
       }
-
-     
-
       
       
       public function rep()

@@ -43,6 +43,27 @@
       </a>
     </li>
 @endif 
+@if (chk_para(session('user_info')['favorite'], $menu_active."_show")=="ok" or session('user_info')['ui_type']=="1")
+    <li class="nav-item">
+      <a class="nav-link @php if($menu_active=="favorite"){echo "active";}else{echo "";} @endphp" href="{{ route('favorite.list') }}">
+        <span class="nav-icon @php if($menu_active=="favorite"){echo "activex";}else{echo "";} @endphp">
+          <i class="far fa-calendar-alt fa-lg"></i>
+        </span>
+        <span class="nav-link-text @php if($menu_active=="favorite"){echo "activex";}else{echo "";} @endphp">تفضيلاتي</span>
+      </a>
+    </li>
+@endif 
+@if (chk_para(session('user_info')['orders'], $menu_active."_show")=="ok" or session('user_info')['ui_type']=="1")
+    <li class="nav-item">
+      <a class="nav-link @php if($menu_active=="orders"){echo "active";}else{echo "";} @endphp" href="{{ route('orders.list') }}">
+        <span class="nav-icon @php if($menu_active=="orders"){echo "activex";}else{echo "";} @endphp">
+          <i class="far fa-calendar-alt fa-lg"></i>
+        </span>
+        <span class="nav-link-text @php if($menu_active=="orders"){echo "activex";}else{echo "";} @endphp">طلباتي</span>
+      </a>
+    </li>
+@endif
+
 
 
 </ul><!--//app-menu-->

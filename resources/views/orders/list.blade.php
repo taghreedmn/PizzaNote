@@ -1,9 +1,9 @@
 @extends("layouts.header")
   @php
-    $page_title = "الأصدقاء";
-    $menu_active = "myfrind";
+    $page_title = "طلباتي";
+    $menu_active = "orders";
     $prog_footer = env("prog_footer");
-    $btn_title="إضافة الأصدقاء جديد";
+    $btn_title="إضافة طلب جديد";
 @endphp
 
  @if (chk_para(session("user_info")["ui_para"], $menu_active."_show")=="no" and session("user_info")["ui_type"]!=="1")
@@ -11,31 +11,30 @@
      abort(403, "ليس لديك الصلاحية للوصول إلى هذه الصفحة.");
      @endphp
  @endif
-   
+
  @section("contx")
  @include("menu")
  <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
 
+ <div class="app-wrapper">
 
-<div class="app-wrapper">
-  
   <div class="app-content pt-3 p-md-3 p-lg-4">
     <div class="container-xl">
-      
+
       <div class="row g-3 mb-4 align-items-center justify-content-center">
         <div class="col-auto">
            <div class="page-utilities">
             <div class="row g-1">
             <div class="d-grid  p-1 col-md-auto col-sm-12 order-3 btn-responsive">
               <?php if (chk_para(session("user_info")["ui_para"],$menu_active."_add")=="ok" or session("user_info")["ui_type"]=="1"){ ?>
-                <a class="btn btn-primary btn-responsive" data-bs-toggle="modal" data-remote="{{ route('myfrind.create') }}"  data-bs-target="#modal-add"><i class="fas fa-plus"></i>
+                <a class="btn btn-primary btn-responsive" data-bs-toggle="modal" data-remote="{{ route('orders.create') }}"  data-bs-target="#modal-add"><i class="fas fa-plus"></i>
                  <b><?php echo $btn_title; ?></b>
                 </a>
             <?php } ?>
-            
+
              </div>
               <div class="d-grid  p-1 col-md-auto col-sm-12 order-2 btn-responsive">
-                <form action="{{ route('myfrind.list') }}" method="GET">
+                <form action="{{ route('orders.list') }}" method="GET">
                  <div class="input-group">
                    <span class="input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
                      <input name="q" type="text" class="form-control" placeholder="جزء من الرقم أو تاريخ الاضافة أو الاسم">
@@ -45,28 +44,28 @@
               </div>
               <div class="d-grid  p-1 col-md-auto col-sm-12 order-1 btn-responsive">
               <?php if (chk_para(session("user_info")["ui_para"],$menu_active."_rep")=="ok" or session("user_info")["ui_type"]=="1"){ ?>
-                <a class="btn btn-success btn-responsive" data-bs-toggle="modal" data-remote="{{ route('myfrind.rep') }}"  data-bs-target="#modal-rep"><i class="far fa-file-alt"></i> <b>التقارير</b></a>
+                <a class="btn btn-success btn-responsive" data-bs-toggle="modal" data-remote="{{ route('orders.rep') }}"  data-bs-target="#modal-rep"><i class="far fa-file-alt"></i> <b>طباعة الفاتورة</b></a>
               <?php } ?>
               </div>
-              
+
               <div id="datepicker"></div>
 
-            
+
             </div><!--//row-->
           </div><!--//table-utilities-->
         </div><!--//col-auto-->
       </div><!--//row-->
-     
 
-      
+
+
       <nav id="orders-table-tab" class="hh orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
         <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
         <a class="flex-sm-fill text-sm-center nav-link"  id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
         <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
         <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
     </nav>
-    
-    
+
+
     <div class="tab-content" id="orders-table-tab-content">
           <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
           <div class="app-card app-card-orders-table shadow-sm mb-1">
@@ -76,46 +75,47 @@
                 <thead>
                   <tr class="bg-infox">
                       <th data-visible="ture" data-orderable="false">الاداوات</th>
-                      
-      				<th class="text-center" data-visible="false">الحالة الاجتماعية</th>
-      				<th class="text-center" data-visible="true">البريد الالكتروني</th>
-      				<th class="text-center" data-visible="true">العنوان</th>
-      				<th class="text-center" data-visible="true">الجوال</th>
-      				<th class="text-center" data-visible="true">الاسم</th>
-      				<th class="text-center" data-visible="true">تاريخ الاضافة</th>
-	  				<th class="text-center" data-visible="ture"><b>الرقم</b></th>
+
+
+              <th class="text-center" data-visible="false">حالة الطلب</th>
+      				<th class="text-center" data-visible="true">السعر</th>
+              <th class="text-center" data-visible="true">تفاصيل الطلب</th>
+              <th class="text-center" data-visible="true">اسم البيتزا</th>
+      				<th class="text-center" data-visible="true">اسم العميل</th>
+      				<th class="text-center" data-visible="ture">تاريخ الطلب</th>
+	  				<th class="text-center" data-visible="ture"><b>رقم الطلب</b></th>
 	  			</tr>
 			</thead>
     <tbody>
 
+
+
     @unless ($listings->isEmpty())
     @foreach ($listings as $list)
-    
+
       <td class="cell">
           <a class="btn btn-success" data-bs-toggle="modal"
-              data-remote="{{ route('myfrind.show', enc($list->id) ) }}"
+              data-remote="{{ route('orders.show', enc($list->id) ) }}"
               data-bs-target="#modal-show"><i class="fas fa-file-alt"></i></a>
       </td>
-      
-      
-      
-		 <td class="cell">
-        <?php echo get_my_f_social($list->my_f_social); ?>
-     </td>
-		<td class="cell">
-      <?php echo $list->my_f_email; ?>
+
+      <td class="cell">
+
+    </td>
+    <td class="cell">
+      <?php echo $list->price; ?>
+    </td>
+    <td class="cell">
+      <?php echo $list->pizza_type , ", " ,  $list->pizza_size , ", ",  $list->toppings; ?>
     </td>
 		<td class="cell">
-      <?php echo $list->my_f_address; ?>
+      <?php echo $list->pizza_name; ?>
+    </td>
+    <td class="cell">
+      <?php echo $list->user_name; ?>
     </td>
 		<td class="cell">
-      <?php echo $list->my_f_mobile; ?>
-    </td>
-		<td class="cell">
-      <?php echo $list->my_f_name; ?>
-    </td>
-		<td class="cell">
-      <?php echo $list->my_f_add_date; ?>
+      <?php echo $list->order_date; ?>
     </td>
 		<td class="cell">
       <?php echo $list->id; ?>
@@ -127,7 +127,6 @@
         </tbody>
       </table>
     </div>
-
     <!--//table-responsive-->
   </div>
   <!--//app-card-body-->
@@ -144,12 +143,12 @@
     </div>
     <!--//container-fluid-->
     </div>
-    <!--//app-content-->  
-    
-    
+    <!--//app-content-->
+
+
     <div class="modal fade" id="modal-add" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    
+
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -210,7 +209,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="modal-rep" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -232,9 +231,9 @@
         </div>
     </div>
 
-    
+
     <script src="{{ asset('DataTables/datatables.js?v=8') }}"></script>
-    
+
 <script>
 $( function () {
     var table = $("#datat_list").DataTable({
@@ -242,7 +241,7 @@ $( function () {
       "columnDefs": [ {
       "targets"  : "no-sort",
       "orderable": false,
-    }],		
+    }],
       "paging": false,
       "bInfo" : false,
       "oLanguage": {"sSearch": ""}
@@ -280,13 +279,13 @@ $("#modal-add").on("show.bs.modal", function (e) {
   var button = $(e.relatedTarget);
   var modal = $(this);
   modal.find(".modal-body-add").load(button.data("remote"));
-}); 
+});
 
 $("#modal-show").on("show.bs.modal", function (e) {
   var button = $(e.relatedTarget);
   var modal = $(this);
   modal.find(".modal-body-show").load(button.data("remote"));
-}); 
+});
 
 $("#modal-edit").on("show.bs.modal", function (e) {
   var button = $(e.relatedTarget);
@@ -298,7 +297,7 @@ $("#modal-rep").on("show.bs.modal", function (e) {
   var button = $(e.relatedTarget);
   var modal = $(this);
   modal.find(".modal-body-rep").load(button.data("remote"));
-}); 
+});
 
 </script>
 
@@ -312,7 +311,7 @@ function del(vall) {
     .then((willDelete) => {
         if (willDelete) {
           window.swal({title: "جاري الحذف",text: "الرجاء الإنتظار",icon: "{{ asset('images/loding2.gif') }}",buttons: false,allowOutsideClick: false});
-          axios.delete(`/myfrind/${vall}`)
+          axios.delete(`/orders/${vall}`)
         .then(response => {
           swal({text: "تم الحذف",icon: "success",timer: 1500,button: false,});
             setTimeout(function(){location.reload();}, 1500);
@@ -323,9 +322,9 @@ function del(vall) {
         }
       });
   };
+
 </script>
 
 @include('layouts.footer')
 
 @endsection
-

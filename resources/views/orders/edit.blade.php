@@ -1,5 +1,5 @@
 @php
-  $menu_active = "pizza";
+  $menu_active = "orders";
   $prog_footer = env('prog_footer');
   @endphp
   @if (chk_para(session("user_info")["ui_para"], $menu_active."_add")=="no" and session("user_info")["ui_type"]!=="1")
@@ -34,32 +34,28 @@
     @csrf
  
                     <div class="form-floating mb-1 float-end text-end">
-                      <input class="form-control pull-right float-end text-end nowrite"  onclick="xcalnder(event,'my_p_add_date_h','my_p_add_date_m')" name="my_p_add_date"   required " data-error-msg="يجب تعبئة تاريخ الاضافة" id="my_p_add_date_h" placeholder="تاريخ الاضافة" tabindex="1" value="{{ $listings->my_p_add_date }}">
+                      <input class="form-control pull-right float-end text-end nowrite"  onclick="xcalnder(event,'order_date_h','order_date_m')" name="order_date"   required " data-error-msg="يجب تعبئة تاريخ الاضافة" id="order_date_h" placeholder="تاريخ الاضافة" tabindex="1" value="{{ $listings->order_date }}">
                       
-                      <input class="hh" name="my_p_add_date_h" id="my_p_add_date_h">
+                      <input class="hh" name="order_date_h" id="order_date_h">
                       
                       <label class="msg-right required " data-error-msg="يجب تعبئة تاريخ الاضافة" for="message">تاريخ الاضافة</label>
-                       <div class="invalid-feedback" id="my_p_add_date_error"></div>        
+                       <div class="invalid-feedback" id="order_date_error"></div>        
                     </div>
-                    
-       <div class="form-floating mb-1 float-end text-end">
-               <input type="text" class="form-control pull-right float-end text-end" name="my_p_name" value="{{$listings->my_p_name}}"
-               id="my_p_name_edit" tabindex="2">
-           <label class="msg-right required" for="message">الاسم</label>
-           <div class="invalid-feedback" id="my_p_name_error"></div>        
-       </div>
-       
-        <div class="form-floating mb-1 float-end text-end">
-                <input type="text" class="form-control pull-right float-end text-end only-numeric" name="my_p_price" value="{{$listings->my_p_price}}"
-                id="my_p_price_edit" tabindex="3">
-            <label class="msg-right required" for="message">السعر</label>
-            <div class="invalid-feedback" id="my_p_price_error"></div>        
-        </div>
+
+            <div class="form-floating mb-1 float-end text-end">
+                <select class="form-select float-end" name="pizza_name" id="pizza_name" tabindex="4">
+                    <option value="">اختر من القائمة</option>
+                    @php list_pizza($listings-> pizza_name); @endphp
+                </select>
+                <label class="msg-right required" for="message">البيتزا</label>
+                <div class="invalid-feedback" id="pizza_name_error"></div> 
+            </div>
+
          
           <div class="form-floating mb-1 float-end text-end">
-           <select class="form-select pull-right float-end " name="my_p_type"   required id="my_p_type_edit" placeholder="النوع" tabindex="6">
+           <select class="form-select pull-right float-end " name="pizza_type"   required id="pizza_type_edit" placeholder="النوع" tabindex="6">
               <option value="">اختر من القائمة</option>
-              <?php echo list_my_p_type($listings->my_p_type); ?>
+              <?php echo list_my_p_type($listings->pizza_type); ?>
             </select>
            <label class="msg-right required" for="message">النوع</label>
            <div class="invalid-feedback">مطلوب النوع</div>
@@ -67,20 +63,25 @@
           
                 
         <div class="form-floating mb-1 float-end text-end">
-           <select class="form-select pull-right float-end " name="my_p_size"   required id="my_p_size_edit" placeholder="الحجم" tabindex="6">
+           <select class="form-select pull-right float-end " name="pizza_size"   required id="pizza_size_edit" placeholder="الحجم" tabindex="6">
               <option value="">اختر من القائمة</option>
-              <?php echo list_my_p_size($listings->my_p_size); ?>
+              <?php echo list_my_p_size($listings->pizza_size); ?>
             </select>
            <label class="msg-right required" for="message">الحجم</label>
            <div class="invalid-feedback">مطلوب الحجم</div>
         </div>
         
-        <div class="form-floating mb-1 float-end text-end" id="div_my_p_toppings" dir="rtl">
-    <label class="col-form-label float-end " for="my_p_toppings">الإضافات</label>
-    <select name="my_p_toppings[]" id="my_p_toppings" class="form-select my_p_toppings"  multiple="multiple" data-live-search="true">
-                    @php list_my_p_toppings_edit($listings->my_p_toppings);@endphp
+        <div class="form-floating mb-1 float-end text-end" id="div_toppings" dir="rtl">
+    <label class="col-form-label float-end " for="toppings">الإضافات</label>
+    <select name="toppings[]" id="toppings" class="form-select toppings"  multiple="multiple" data-live-search="true">
+                    @php list_my_p_toppings_edit($listings->toppings);@endphp
                 </select>
-        <div class="invalid-feedback" id="my_p_toppings_error"></div>        
+        <div class="invalid-feedback" id="toppings_error"></div>        
+    </div>
+    <div class="form-floating mb-1 float-end text-end ">
+        <input type="text" class="form-control pull-right float-end text-end" name="notes" id="notes" tabindex="2" value = "{{$listings->notes}}">
+        <label class="msg-right " for="message">ملاحظات</label>
+        <div class="invalid-feedback" id="name_error"></div>        
     </div>
         
 <div class="d-grid gap-2 col-6 mx-auto">
@@ -101,7 +102,7 @@
         e.preventDefault();
         var formData = new FormData(this);
         formData.append('id','{{ enc($listings->id) }}');
-        axios.post('/pizza.update', formData)
+        axios.post('/orders.update', formData)
         .then(function (response) {
             //console.log("OK" + response);
             swal({text: "تم التحديث",icon: "success",timer: 1500,button: false,});
@@ -137,5 +138,5 @@
     });
 </script>
 <script>
-  $("#my_p_toppings").bsMultiSelect();
+  $("#toppings").bsMultiSelect();
 </script>

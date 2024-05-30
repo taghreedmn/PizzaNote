@@ -6,11 +6,11 @@
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Hash;
   use Illuminate\Validation\Rules;
-  
   use Elibyy\TCPDF\Facades\TCPDF;
   use Alkoumi\LaravelHijriDate\Hijri;
-  
   use App\Models\Pizza;
+  use Illuminate\Console\Scheduling\Schedule;
+
   
 class Pizza_cnt extends Controller
 {
@@ -81,6 +81,7 @@ class Pizza_cnt extends Controller
             ]);
         }
 
+
     public function update(Request $request)
         {
           $v_mypizza = Pizza::findOrFail(dec(request()->input('id')));
@@ -99,7 +100,7 @@ class Pizza_cnt extends Controller
                   $txt_para = implode(',', $request->input('my_p_toppings'));
                   $txt_para = rtrim($txt_para, ',');
               }else{
-                  $txt_para = $v_mypizza->ui_para;
+                  $txt_para = $v_mypizza->my_p_toppings;
               }
             
               $v_mypizza->my_p_add_date = $request->input('my_p_add_date');
@@ -150,6 +151,8 @@ class Pizza_cnt extends Controller
       
           return view('pizza.list', compact('listings'));
       }
+
+      
       
     public function rep()
       {

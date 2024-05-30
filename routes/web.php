@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Favorite;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Users_info\Users_info_cnt;
 use App\Http\Controllers\PDFController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\PDFController;
 
 use App\Http\Controllers\myfrind\Myfrind_cnt;
 use App\Http\Controllers\Pizza\Pizza_cnt;
+use App\Http\Controllers\Favorite\Favorite_cnt;
+use App\Http\Controllers\Order\Order_cnt;
 
 Route::get("/", function () {
   if (Auth::check()) {
@@ -47,7 +50,25 @@ Route::middleware("auth")->group(function () {
     Route::post("pizza.store", [Pizza_cnt::class, "store"]);
     Route::post("pizza.update", [Pizza_cnt::class, "update"]);
     Route::resource("pizza", Pizza_cnt::class);
-   
+
+    Route::get("favorite/list", [Favorite_cnt::class, "list"])->name("favorite.list");
+    Route::get("favorite/{{favorite}}/show", [Pizza_cnt::class, "show"])->name("favorite.show");
+    Route::get("favorite/rep", [Favorite_cnt::class, "rep"])->name("favorite.rep");
+    Route::post("favorite.rep_excel", [Favorite_cnt::class, "rep_excel"])->name("favorite.rep_excel");
+    Route::post("favorite.rep_pdf", [Favorite_cnt::class, "rep_pdf"])->name("favorite.rep_pdf");
+    Route::post("favorite.store", [Favorite_cnt::class, "store"]);
+    Route::post("favorite.update", [Favorite_cnt::class, "update"]);
+    Route::resource("favorite", Favorite_cnt::class);
+
+    Route::get("orders/list", [Order_cnt::class, "list"])->name("orders.list");
+    Route::get("orders/{{orders}}/show", [Order_cnt::class, "show"])->name("orders.show");
+    Route::get("orders/rep", [Order_cnt::class, "rep"])->name("orders.rep");
+    Route::post("orders.rep_excel", [Order_cnt::class, "rep_excel"])->name("orders.rep_excel");
+    Route::post("orders.rep_pdf", [Order_cnt::class, "rep_pdf"])->name("orders.rep_pdf");
+    Route::post("orders.store", [Order_cnt::class, "store"]);
+    Route::post("orders.update", [Order_cnt::class, "update"]);
+    Route::resource("orders", Order_cnt::class);
+
    //---- Any New Line Add Below
 
 });

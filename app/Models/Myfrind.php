@@ -9,10 +9,10 @@
   class Myfrind extends Model
   {
       use HasFactory;
-      public function pizzas(): BelongsToMany
-      {
-          return $this->belongsToMany(Pizza::class);
-      }
+    //   public function pizzas(): BelongsToMany
+    //   {
+    //       return $this->belongsToMany(Pizza::class);
+    //   }
 
 
 

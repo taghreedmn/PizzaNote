@@ -1,13 +1,18 @@
 <?php
   use Alkoumi\LaravelHijriDate\Hijri;
-  function enc_old($string){
-	return rtrim(strtr(base64_encode($string), "+/", "-_"), "="); 
+  use App\Models\Favorite;
+  use App\Models\Pizza;
+  use App\Models\Order;
+
+
+    function enc_old($string){
+	return rtrim(strtr(base64_encode($string), "+/", "-_"), "=");
   }
-  
+
   function dec_old($string){
-	  return base64_decode(str_pad(strtr($string, "-_", "+/"), strlen($string) % 4, "=", STR_PAD_RIGHT)); 
+	  return base64_decode(str_pad(strtr($string, "-_", "+/"), strlen($string) % 4, "=", STR_PAD_RIGHT));
   }
-  
+
   function enc($text) {
 	$key = env('APP_KEY');
 	$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -16,7 +21,7 @@
 	$result = enc_old($result);
 	return $result;
   }
-  
+
   function dec($encryptedText) {
 	$key = env('APP_KEY');
 	$data = base64_decode(dec_old($encryptedText));
@@ -39,14 +44,14 @@
 	  $txt = str_ireplace("and","4nd",$txt);
 	  $txt = str_ireplace("set","5et",$txt);
 	  $txt = str_ireplace("into","1nt0",$txt);
-	 $txt = str_ireplace("'", "", $txt);
+	  $txt = str_ireplace("'", "", $txt);
 	  $txt = str_ireplace(";", "", $txt);
 	  $txt = str_ireplace(">", "", $txt);
 	  $txt = str_ireplace("<", "", $txt);
 	  $txt = strip_tags($txt);
 	  $txt = fix_arb_num($txt);
 	  return $txt;
-  } 
+  }
 
 	function fix_arb_num($text){
 	  	$letters = array("١","٢","٣","٤","٥","٦","٧","٨","٩","٠");
@@ -54,12 +59,12 @@
 	  	$output  = str_ireplace($letters, $fruit, $text);
 	  	return $output;
   	}
-	  
+
 	function set_stamp($type=""){
 		if($type=="hdt"){
-			return Hijri::Date("Y-m-d H:i:s"); 
+			return Hijri::Date("Y-m-d H:i:s");
 		}elseif($type=="hd"){
-			return Hijri::Date("Y-m-d"); 
+			return Hijri::Date("Y-m-d");
 		}elseif($type=="mdt"){
 			return $datex = date("Y-m-d H:i:s");
 		}elseif($type=="md"){
@@ -69,12 +74,12 @@
 			return $datex;
 		}
 	}
-	  
+
 	function list_txt_type($val){
 	  echo '<option '.($val=="1" ? "selected" : "").' value="1">مدير النظام</option>';
 	  echo '<option '.($val=="2" ? "selected" : "").' value="2">مستخدم</option>';
 	}
-	
+
 	function get_txt_type($type){
 		if($type==1){return "مدير النظام";}
 		if($type==2){return "مستخدم";}
@@ -86,9 +91,9 @@
 		echo '<option value="users_edit">المستخدمون - تعديل</option>';
 		echo '<option value="users_del">المستخدمون - حذف</option>';
 		echo '<option value="users_rep">المستخدمون - تقارير</option>';
-		
+
 		echo '<option disabled>----</option>';
-		
+
 		echo '<option value="users_show">المستخدمون - تفاصيل </option>';
 		echo '<option value="myfrind_show">الأصدقاء - تفاصيل </option>';
 		echo '<option value="myfrind_add">الأصدقاء - إضافة</option>';
@@ -97,53 +102,53 @@
 		echo '<option value="myfrind_rep">الأصدقاء - تقارير</option>';
 
 		echo '<option disabled>----</option>';
-		
+
 		echo '<option value="users_show">المستخدمون - تفاصيل </option>';
 		echo '<option value="pizza_show">بيتزا - تفاصيل </option>';
 		echo '<option value="pizza_add">بيتزا - إضافة</option>';
 		echo '<option value="pizza_edit">بيتزا - تعديل</option>';
 		echo '<option value="pizza_del">بيتزا - حذف</option>';
 		echo '<option value="pizza_rep">بيتزا - تقارير</option>';
-		
+
 	}
-	
+
 	function get_txt_para($val){
-					
+
 		if($val=="users_show"){return "المستخدمون - تفاصيل";}
 		if($val=="users_add"){return "المستخدمون - إضافة";}
 		if($val=="users_edit"){return "المستخدمون - تعديل";}
 		if($val=="users_del"){return "المستخدمون - حذف";}
 		if($val=="users_rep"){return "المستخدمون - تقارير";}
-		
+
 		if($val=="myfrind_show"){return "الأصدقاء - تفاصيل";}
 		if($val=="myfrind_add"){return "الأصدقاء - إضافة";}
 		if($val=="myfrind_edit"){return "الأصدقاء - تعديل";}
 		if($val=="myfrind_del"){return "الأصدقاء - حذف";}
 		if($val=="myfrind_rep"){return "الأصدقاء - تقارير";}
-		
+
 		if($val=="pizza_show"){return "بيتزا - تفاصيل";}
 		if($val=="pizza_add"){return "بيتزا - إضافة";}
 		if($val=="pizza_edit"){return "بيتزا - تعديل";}
 		if($val=="pizza_del"){return "بيتزا - حذف";}
 		if($val=="pizza_rep"){return "بيتزا - تقارير";}
 	}
-	
+
 	function show_txt_para($val){
 		foreach (explode(",", $val) as $id) {
-			echo get_txt_para($id)."<br>";	 
+			echo get_txt_para($id)."<br>";
 		}
 	}
 
 	function list_txt_para_edit($val){
 	  $permissions = explode(",", $val);
-	
+
 	  $options = [
 	  		'users_show' => 'المستخدمون - تفاصيل',
   			'users_add' => 'المستخدمون - إضافة',
   			'users_edit' => 'المستخدمون - تعديل',
   			'users_del' => 'المستخدمون - حذف',
   			'users_rep' => 'المستخدمون - تقارير',
-			
+
 			'myfrind_show' => 'الأصدقاء - تفاصيل',
 			'myfrind_add' => 'الأصدقاء - إضافة',
 			'myfrind_edit' => 'الأصدقاء - تعديل',
@@ -155,9 +160,9 @@
 			'pizza_edit' => 'بيتزا - تعديل',
 			'pizza_del' => 'بيتزا - حذف',
 			'pizza_rep' => 'بيتزا - تقارير',
-			
+
 	  ];
-	
+
 	  foreach ($options as $key => $label) {
 		  $selected = in_array($key, $permissions) ? "selected" : "";
 		  echo "<option $selected value='$key'>$label</option>";
@@ -189,52 +194,52 @@
 			<div class="alert alert-primary d-flex align-items-center alert-dismissible fade show" role="alert">
 			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
 			  <div>
-				<?php 
-					echo $msg; 
-					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
-				?>
-			  </div>
-			</div>
-	<?php } ?>		
-	
-	<?php if($type=='success'){ ?>
-			<div class="alert alert-success d-flex align-items-center alert-dismissible fade show" role="alert">
-			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-			  <div>
-				<?php 
-					echo $msg; 
-					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
-				?>
-			  </div>
-			</div>
-	<?php } ?>	
-		
-	<?php if($type=='warning'){ ?>		
-			<div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
-			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-			  <div>
-				<?php 
-					echo $msg; 
+				<?php
+					echo $msg;
 					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
 				?>
 			  </div>
 			</div>
 	<?php } ?>
-	
-	<?php if($type=='error'){ ?>		
+
+	<?php if($type=='success'){ ?>
+			<div class="alert alert-success d-flex align-items-center alert-dismissible fade show" role="alert">
+			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+			  <div>
+				<?php
+					echo $msg;
+					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
+				?>
+			  </div>
+			</div>
+	<?php } ?>
+
+	<?php if($type=='warning'){ ?>
+			<div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+			  <div>
+				<?php
+					echo $msg;
+					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
+				?>
+			  </div>
+			</div>
+	<?php } ?>
+
+	<?php if($type=='error'){ ?>
 			<div class="alert alert-danger d-flex align-items-center alert-dismissible fade show" role="alert">
 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
 			  <div>
-				<?php 
-					echo $msg; 
+				<?php
+					echo $msg;
 					if($backx!=""){echo '<p><a href="javascript:history.back();">رجوع</a></p>';}
 				?>
 			  </div>
 			  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 			</div>
-	
-			<?php 
+
+			<?php
 			}
 	}
 	function chk_para($main_word,$srch_word){
@@ -244,7 +249,7 @@
 			return "no";
 		}
 	}
-	
+
 	function icon($file){
 		$img="<i class='far fa-file-alt fa-2x'></i>";
 		$ext=strtoupper(substr($file, strrpos($file, ".") + 1));
@@ -252,10 +257,10 @@
 		if($ext=="DOCX" or $ext=="DOC" ){$img="<i class='far fa-file-word fa-2x text-info'></i>";}
 		if($ext=="XLSX" or $ext=="XLS"){$img="<i class='far fa-file-excel fa-2x text-success'></i>";}
 		if($ext=="JPG" or $ext=="JPEG" or $ext=="HEIC" or $ext=="SVG" or $ext=="PNG"){$img="<i class='far fa-file-image fa-2x text-warning'></i>";}
-		
+
 		return $img;
 	}
-	
+
 	function nl2br_sp($txt){
 		$tab = "
 		<table style='font-size:13px;' class='text-center table table-bordered' border='1' cellspacing='0' cellpadding='0'>
@@ -271,12 +276,12 @@
 		";
 		return $tab;
 	}
-	
+
 	function nlx2br($txt){
 		$nx = str_ireplace("&#13;&#10;", "<br>", $txt);
 		return $nx;
 	}
-	
+
 	function send_sms($msg,$mobile){
 		//return "$msg,$mobile";
 		//exit;
@@ -295,9 +300,9 @@
 							"baseEncode" => "true",
 							"statusCallback" => "sent",
 							"async" => "true"
-		
+
 						);
-					
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL,$URL);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30); //timeout after 30 seconds
@@ -314,7 +319,7 @@
 		$res = json_decode($result);
 		//print_r($res);
 		//exit;
-	//stdClass Object ( [success] => true [message] => [errorCode] => ER-00 [data] => stdClass Object ( [Messages] => Array ( [0] => stdClass Object ( [MessageID] => 41000090471122 [Recipient] => 966565709000 [Status] => Queued ) ) [NumberOfUnits] => 0 [Cost] => 0 [Balance] => 0 [TimeCreated] => 2021-06-21 07:08:12.922 [CurrencyCode] => ) )	
+	//stdClass Object ( [success] => true [message] => [errorCode] => ER-00 [data] => stdClass Object ( [Messages] => Array ( [0] => stdClass Object ( [MessageID] => 41000090471122 [Recipient] => 966565709000 [Status] => Queued ) ) [NumberOfUnits] => 0 [Cost] => 0 [Balance] => 0 [TimeCreated] => 2021-06-21 07:08:12.922 [CurrencyCode] => ) )
 	//stdClass Object ( [success] => true [message] => [errorCode] => ER-00 [data] => stdClass Object ( [Messages] => Array ( [0] => stdClass Object ( [MessageID] => 41000090471433 [Recipient] => 966598984330 [Status] => Queued ) ) [NumberOfUnits] => 0 [Cost] => 0 [Balance] => 0 [TimeCreated] => 2021-06-21 07:10:37.540 [CurrencyCode] => ) )
 		if( $res->success=="true" ){
 			return "ok";
@@ -330,7 +335,7 @@
 		}
 		$date1=date_create(date("Y-m-d H:i:s"));
 		$date2=date_create($datex);
-	
+
 		$diff=date_diff($date1,$date2);
 		//print_r($diff);
 		//exit;
@@ -352,93 +357,93 @@
 			exit;
 		}
 	}
-	
+
 
 function list_my_f_social($val){
-				
+
 		$options = [
-	
+
 					["value" => "married", "text" => "متزوج"],
-			
+
 					["value" => "Single", "text" => "أعزب"],
-			
+
 					["value" => "divorced", "text" => "مطلق"],
-			
+
 				];
 				foreach ($options as $option) {
 					$selected = $val == $option["value"] ? "selected" : "";
 					echo "<option $selected value=\"$option[value]\">$option[text]</option>";
 				}
-			
+
 }
 
 function get_my_f_social($val){
-				
+
 	if($val=="married"){return "متزوج";}
 	if($val=="Single"){return "أعزب";}
 	if($val=="divorced"){return "مطلق";}
 }
 
 function list_my_p_size($val){
-				
+
 	$options = [
 
 				["value" => "large", "text" => "كبير"],
-		
+
 				["value" => "medium", "text" => "وسط"],
-		
+
 				["value" => "small", "text" => "صغير"],
-		
+
 			];
 			foreach ($options as $option) {
 				$selected = $val == $option["value"] ? "selected" : "";
 				echo "<option $selected value=\"$option[value]\">$option[text]</option>";
 			}
-		
+
 }
 
 function get_my_p_size($val){
-			
+
 if($val=="large"){return "كبير";}
 if($val=="medium"){return "وسط";}
 if($val=="small"){return "صغير";}
 }
 
 function list_my_p_type($val){
-				
+
 	$options = [
 
 				["value" => "Thick", "text" => "سميكة"],
-		
+
 				["value" => "Thin", "text" => "رقيقة"],
-		
+
 				["value" => "Ultra thin", "text" => "الترا رقيقة"],
-		
+
 			];
 			foreach ($options as $option) {
 				$selected = $val == $option["value"] ? "selected" : "";
 				echo "<option $selected value=\"$option[value]\">$option[text]</option>";
 			}
-		
+
 }
 
 function get_my_p_type($val){
-			
+
 if($val=="Thick"){return "سميكة";}
 if($val=="Thin"){return "رقيقة";}
 if($val=="Ultra thin"){return "الترا رقيقة";}
 }
 
 function list_my_p_toppings(){
-				
+
 	echo '<option value="Olives">زيتون</option>';
     echo '<option value="Peppers">فلفل</option>';
     echo '<option value="Mushrooms">مشروم</option>';
-		
+
 }
 
 function get_my_p_toppings($val){
-			
+
 if($val=="Olives"){return "زيتون";}
 if($val=="Peppers"){return "فلفل";}
 if($val=="Mushrooms"){return "مشروم";}
@@ -447,26 +452,57 @@ if($val=="Mushrooms"){return "مشروم";}
 
 function show_my_p_toppings($val){
 	foreach (explode(",", $val) as $id) {
-		echo get_my_p_toppings($id)."<br>";	 
+		echo get_my_p_toppings($id)."<br>";
 	}
 }
 
 
 function list_my_p_toppings_edit($val){
-	
+
 	$permissions = explode(",", $val);
-  
+
 	$options = [
 
 		 "Olives" => "زيتون",
-		
+
 		 "Peppers" => "فلفل",
-			
+
 		 "Mushrooms"=> "مشروم",
 	];
-  
+
 	foreach ($options as $key => $label) {
 		$selected = in_array($key, $permissions) ? "selected" : "";
 		echo "<option $selected value='$key'>$label</option>";
 	}
   }
+
+  function list_my_favorite($val) {
+	$permissions = explode(",", $val);
+	$fav = Pizza ::all();
+	foreach ($fav as $key) {
+		$selected = in_array($key->my_p_name, $permissions) ? "selected" : "";
+		echo "<option $selected value='$key->my_p_name'>$key->my_p_name</option>";
+	}
+}
+function list_pizza($val) {
+	$permissions = explode(",", $val);
+	$pizza = Pizza ::all();
+	foreach ($pizza as $key) {
+		$selected = $val == $key->my_p_name ? "selected" : "";
+		echo "<option $selected value=\"$key->my_p_name\" price=\"$key->my_p_price\" >$key->my_p_name</option>";
+	}
+
+}
+//function calculate_tax($val)
+//{
+//        $taxRate = 15;
+//        $tax = $val * $taxRate / 100;
+//        $total = $val + $tax ;
+//        echo $total;
+//}
+
+
+
+
+
+

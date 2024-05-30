@@ -1,8 +1,8 @@
 @php
-      $title = "بيتزا";
-      $menu_active = "pizza";
+      $title = "طلباتي";
+      $menu_active = "orders";
       $prog_footer = env("prog_footer");
-      $btn_title="إضافة بيتزا جديدة";
+      $btn_title="إضافة طلب جديد";
   @endphp
   
    @if (chk_para(session("user_info")["ui_para"], $menu_active."_show")=="no" and session("user_info")["ui_type"]!=="1")
@@ -26,29 +26,34 @@
 
           <tr>
             <td class="text-center bg-infox" style="width: 35%;"><b>تاريخ الاضافة</b></td>
-            <td><b>{{$listings->my_p_add_date}}</b></td>
+            <td><b>{{$listings->order_date}}</b></td>
           </tr>
           <tr>
-            <td class="text-center bg-infox" style="width: 35%;"><b>الاسم</b></td>
-            <td><b>{{$listings->my_p_name}}</b></td>
+            <td class="text-center bg-infox" style="width: 35%;"><b>اسم العميل</b></td>
+            <td><b>{{$listings->user_name}}</b></td>
           </tr>
           <tr>
-            <td class="text-center bg-infox" style="width: 35%;"><b>السعر</b></td>
-            <td><b>{{$listings->my_p_price}}</b></td>
+            <td class="text-center bg-infox" style="width: 35%;"><b>اسم البيتزا</b></td>
+            <td><b>{{$listings->pizza_name}}</b></td>
           </tr>
-          <tr>
             <td class="text-center bg-infox" style="width: 35%;"><b>النوع</b></td>
-            <td><b>{{get_my_p_type($listings->my_p_type)}}</b></td>
+            <td><b>{{$listings->pizza_type}}</b></td>
+          </tr>
+          <tr>
+          <tr>
+            <td class="text-center bg-infox" style="width: 35%;"><b>الحجم</b></td>
+            <td><b>{{$listings->pizza_size}}</b></td>
           </tr>
           <tr>
             <td class="text-center bg-infox" style="width: 35%;"><b>الإضافات</b></td>
-            <td><b>{{show_my_p_toppings($listings->my_p_toppings)}}</b></td>
+            <td><b>{{$listings->toppings}}</b></td>
           </tr>
           <tr>
-            <td class="text-center bg-infox" style="width: 35%;"><b>الحجم</b></td>
-            <td><b>{{get_my_p_size($listings->my_p_size)}}</b></td>
+            <td class="text-center bg-infox" style="width: 35%;"><b>السعر</b></td>
+            <td><b>{{$listings->price}}</b></td>
           </tr>
-        <tr>
+          <tr>
+        
         <td class="text-center bg-infox d-print-nonex" style="width: 35%;"><b>سجل العمليات</b></td>
         <td>
         <div class="accordion accordion-flush" id="div_acc_log">
@@ -74,7 +79,7 @@
       @endif
       
       @if (chk_para(session("user_info")["ui_para"], $menu_active."_edit")=="ok" or session("user_info")["ui_type"]=="1")
-            <a class="btn btn-info" data-bs-toggle="modal" data-remote="{{ route('pizza.edit', enc($listings->id) ) }}"  data-bs-target="#modal-edit"><i class="fas fa-edit"></i> تعديل</a>
+            <a class="btn btn-info" data-bs-toggle="modal" data-remote="{{ route('orders.edit', enc($listings->id) ) }}"  data-bs-target="#modal-edit"><i class="fas fa-edit"></i> تعديل</a>
       @endif
 
             <a href="javascript:void(0);" class="btn btn-success" id="print"><i class="fas fa-print"></i> طباعة</a>
@@ -93,5 +98,5 @@
 
   </script>
 <script>
-  $("#my_p_toppings").bsMultiSelect();
+  $("#toppings").bsMultiSelect();
   </script>
